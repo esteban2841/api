@@ -1,48 +1,17 @@
 const {Router} = require("express");
 const routePokemons = Router();
 const fetch = require("cross-fetch")
-
+const {pagData, obtainAllPokemons} = require("../controllers/dataFunctions.js")
 
 const urlBase = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=40"
 
 
 
-const obtainData = async ()=>{
-    const data = await fetch(urlBase)
-    const res = await data.json()
-    return res.results
-}
-
-const obtainAllPokemons = async ()=>{
-    const data = await obtainData();
-    const allPokemons = await Promise.all(data.map(async poke=>{
-        const data = await fetch(poke.url)
-        const respuesta = await data.json()
-        
-        return({
-            id: respuesta.id,
-            height: respuesta.height,
-            name : respuesta.name,
-            img : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${respuesta.id}.png`,
-            types : respuesta.types
-        })
-    }))
-    return allPokemons
-}
-const pagData = async ( pag )=>{
-    const data = await obtainData()
-    if(pag == 1){
-        const dataFilter = data.slice((pag - 1), (pag * 12))
-        return dataFilter
-    }else{
-        const dataFilter = data.slice((pag -1)* 12 , (pag) * 12);
-        return dataFilter
-    }
-}
 
 routePokemons.get("/", async (req, res)=>{
 
     const page = req.query.page
+    const name = req.query.name
     
     if(page){
         const data = await pagData(page)
@@ -51,18 +20,31 @@ routePokemons.get("/", async (req, res)=>{
     const pokemones = await Promise.all(data.map(async poke=>{
         const data = await fetch(poke.url)
         const respuesta = await data.json()
-        
+        console.log(respuesta)
         return({
             id: respuesta.id,
             height: respuesta.height,
             name : respuesta.name,
             img : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${respuesta.id}.png`,
-            types : respuesta.types
+            types : respuesta.types,
+            weight : respuesta.weight,
+            stats : respuesta.stats
         })
 
     }))
     
    res.send(pokemones)
+    }else if(name){
+        try{
+            const data = await obtainAllPokemons()
+            const pokeFiletered = data.filter(pokemon=>{
+                return pokemon.name == name
+            })
+    
+            res.send(pokeFiletered)
+        }catch(error){
+            console.log(error)
+        }
     }else{
 
         const data = await pagData(1)
@@ -77,7 +59,9 @@ routePokemons.get("/", async (req, res)=>{
                 height: respuesta.height,
                 name : respuesta.name,
                 img : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${respuesta.id}.png`,
-                types : respuesta.types
+                types : respuesta.types,
+                weight : respuesta.weight,
+                stats : respuesta.stats
             })
     
         }))
@@ -107,24 +91,6 @@ routePokemons.get("/:id", async (req, res)=>{
    
 
 })
-routePokemons.post("/", async (req, res)=>{
 
-
-    const data = req.body
-
-
-    try{
-        const data = await obtainAllPokemons()
-        const pokeFiletered = data.filter(pokemon=>{
-            return pokemon.id == id
-        })
-
-        res.send(pokeFiletered)
-    }catch(error){
-        console.log(error)
-    }
-   
-
-})
 
 module.exports = routePokemons
