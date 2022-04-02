@@ -11,7 +11,7 @@ module.exports = (sequelize) => {
       allowNull: false,
       primaryKey: true
 
-    },
+    },  
     name: {
 
       type: DataTypes.STRING,
@@ -30,6 +30,17 @@ module.exports = (sequelize) => {
     weight:{
       type: DataTypes.INTEGER,
       allowNull:false,
+    },
+    type: {
+
+      type: DataTypes.STRING,
+      allowNull: false,
+
+    },
+    createdInDb:{
+      type:DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
     }
   });
   

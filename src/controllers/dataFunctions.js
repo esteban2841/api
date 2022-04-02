@@ -9,8 +9,21 @@ const obtainData = async ()=>{
     return res.results
 }
 
+const obtDbInfo = async ()=>{
+    return await Pokemons.findAll({
+        include:{
+            model: types,
+            attributes:["name"],
+            through:{
+                attributes:[]
+            }
+        }
+    })
+}
+
 const obtainAllPokemons = async ()=>{
     const data = await obtainData();
+    // const dbInfo= obtDbInfo()
     const allPokemons = await Promise.all(data.map(async poke=>{
         
         const data = await fetch(poke.url)
@@ -21,7 +34,7 @@ const obtainAllPokemons = async ()=>{
             id: respuesta.id,
             height: respuesta.height,
             name : respuesta.name,
-            img : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${respuesta.id}.png`,
+            img : respuesta.id<10?`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/00${respuesta.id}.png`:`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/0${respuesta.id}.png`,
             types : respuesta.types,
             weight : respuesta.weight,
             stats : respuesta.stats
@@ -29,6 +42,8 @@ const obtainAllPokemons = async ()=>{
         })
 
     }))
+
+    // allPokemons.concat(dbInfo)
     return allPokemons
 }
 
@@ -54,3 +69,4 @@ module.exports.pagData = pagData;
 module.exports.obtainAllPokemons = obtainAllPokemons;
 module.exports.obtainData = obtainData;
 module.exports.obtainTypes = obtainTypes;
+module.exports.obtDbInfo = obtDbInfo;
