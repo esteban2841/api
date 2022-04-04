@@ -1,5 +1,5 @@
 const fetch = require("cross-fetch")
-
+const { Pokemon, Types } = require("../db.js")
 const urlBase = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=40"
 const urlTypes = "https://pokeapi.co/api/v2/type"
 
@@ -10,9 +10,9 @@ const obtainData = async ()=>{
 }
 
 const obtDbInfo = async ()=>{
-    return await Pokemons.findAll({
+    return await Pokemon.findAll({
         include:{
-            model: types,
+            model: Types,
             attributes:["name"],
             through:{
                 attributes:[]
@@ -23,28 +23,35 @@ const obtDbInfo = async ()=>{
 
 const obtainAllPokemons = async ()=>{
     const data = await obtainData();
-    // const dbInfo= obtDbInfo()
+    const dbInfo= await obtDbInfo()
     const allPokemons = await Promise.all(data.map(async poke=>{
         
         const data = await fetch(poke.url)
         const respuesta = await data.json()
-        console.log(respuesta)
-
+           const types = respuesta.types.map(t=>{
+            return t.type.name
+        })
+        const stats = respuesta.stats.map(t=>{
+            return{
+                name: t.stat.name,
+                value: t.base_stat
+            } 
+        })
+        
         return({
             id: respuesta.id,
             height: respuesta.height,
             name : respuesta.name,
-            img : respuesta.id<10?`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/00${respuesta.id}.png`:`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/0${respuesta.id}.png`,
-            types : respuesta.types,
+            img :  respuesta.id<10?`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/00${respuesta.id}.png`:`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/0${respuesta.id}.png`,
+            types : types,
             weight : respuesta.weight,
-            stats : respuesta.stats
-
+            stats : stats
         })
 
     }))
 
-    // allPokemons.concat(dbInfo)
-    return allPokemons
+    
+    return [...dbInfo,...allPokemons]
 }
 
 const pagData = async ( pag )=>{

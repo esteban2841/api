@@ -2,7 +2,7 @@ const {Router} = require("express");
 const routePokemons = Router();
 const fetch = require("cross-fetch")
 const {pagData, obtainAllPokemons, obtDbInfo} = require("../controllers/dataFunctions.js")
-
+const {Pokemon, Types} = require("../db.js")
 
 const urlBase = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=40"
 
@@ -13,7 +13,7 @@ routePokemons.get("/", async (req, res)=>{
 
     const page = req.query.page
     const name = req.query.name
-    // const dbInfo = obtDbInfo()
+    const dbInfo = await obtDbInfo()
     if(page){
         const data = await pagData(page)
 
@@ -21,54 +21,72 @@ routePokemons.get("/", async (req, res)=>{
     const pokemones = await Promise.all(data.map(async poke=>{
         const data = await fetch(poke.url)
         const respuesta = await data.json()
-        console.log(respuesta)
+        const types = respuesta.types.map(t=>{
+            return t.type.name
+        })
+        const stats = respuesta.stats.map(t=>{
+            return{
+                name: t.stat.name,
+                value: t.base_stat
+            } 
+        })
+        
         return({
             id: respuesta.id,
             height: respuesta.height,
             name : respuesta.name,
             img :  respuesta.id<10?`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/00${respuesta.id}.png`:`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/0${respuesta.id}.png`,
-            types : respuesta.types,
+            types : types,
             weight : respuesta.weight,
-            stats : respuesta.stats
+            stats : stats
         })
 
     }))
 
-    // pokemones.concat(dbInfo)
-   res.send(pokemones)
+    
+   res.send([...dbInfo,...pokemones])
     }else if(name){
         try{
             const data = await obtainAllPokemons()
+            const dbInfo = await obtDbInfo()
             const pokeFiletered = data.filter(pokemon=>{
                 return pokemon.name == name
             })
             
-            res.send(pokeFiletered)
+            res.send([...dbInfo,...pokeFiletered])
         }catch(error){
             console.log(error)
         }
     }else{
 
         const data = await pagData(1)
-        // const dbInfo = obtDbInfo()
+        const dbInfo = await obtDbInfo()
     
         const pokemones = await Promise.all(data.map(async poke=>{
             const data = await fetch(poke.url)
             const respuesta = await data.json()
+            const types = respuesta.types.map(t=>{
+                return t.type.name
+            })
+            const stats = respuesta.stats.map(t=>{
+                return{
+                    name: t.stat.name,
+                    value: t.base_stat
+                } 
+            })
             
             return({
                 id: respuesta.id,
                 height: respuesta.height,
                 name : respuesta.name,
                 img :  respuesta.id<10?`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/00${respuesta.id}.png`:`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/0${respuesta.id}.png`,
-                types : respuesta.types,
+                types : types,
                 weight : respuesta.weight,
-                stats : respuesta.stats
+                stats : stats
             })
-    
         }))
-        // pokemones.concat(dbInfo)
-       res.send(pokemones)
+        
+        res.send([...dbInfo,...pokemones])
     }
     
 
@@ -76,16 +94,17 @@ routePokemons.get("/", async (req, res)=>{
 
 routePokemons.post('/', async (req, res) => {
     const {name, img, height, weight, types } = req.body;
+
     try {
         //lo creo
         let newPokemon = await Pokemon.create({
             name, img, height, weight, types
         })
         let typesDb = await Types.findAll({
-            where: { name: type }
+            where: { name: types }
         })
         newPokemon.addType(typesDb);
-        res.json('poke');
+        res.json(console.log('poke creado'));
 
     } catch (error) {
         console.log(error);
@@ -96,11 +115,11 @@ routePokemons.post('/', async (req, res) => {
 
 routePokemons.get("/all", async (req, res)=>{
 
-    
+    const dbInfo = await obtDbInfo()
     try{
         const data = await obtainAllPokemons()
        
-        res.send(data)
+        res.send([...dbInfo,...data])
     }catch(error){
         console.log(error)
     }
