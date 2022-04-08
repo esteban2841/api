@@ -24,12 +24,26 @@ const obtDbInfo = async ()=>{
 const obtainAllPokemons = async ()=>{
     const data = await obtainData();
     const dbInfo= await obtDbInfo()
+    console.log(dbInfo)
+    const dbModified = dbInfo.map(pCreated=>{
+        return {
+            id: pCreated.id,
+            height: pCreated.height,
+            name : pCreated.name,
+            img :  pCreated.img,
+            types : pCreated.types,
+            weight : pCreated.weight,
+            stats : [{name: "hp" ,value: pCreated.hp},{name: "attack", value: pCreated.attack},{name: "defense",value: pCreated.defense},{name: "speed",value: pCreated.speed}]
+        }
+    })
+    console.log(dbModified)
+    
     const allPokemons = await Promise.all(data.map(async poke=>{
         
         const data = await fetch(poke.url)
         const respuesta = await data.json()
            const types = respuesta.types.map(t=>{
-            return t.type.name
+            return {name :t.type.name}
         })
         const stats = respuesta.stats.map(t=>{
             return{
@@ -45,18 +59,19 @@ const obtainAllPokemons = async ()=>{
             img :  respuesta.id<10?`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/00${respuesta.id}.png`:`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/0${respuesta.id}.png`,
             types : types,
             weight : respuesta.weight,
-            stats : stats
+            stats : stats,
+            createdInDb: false,
         })
 
     }))
 
     
-    return [...dbInfo,...allPokemons]
+    return [...dbModified,...allPokemons]
 }
 
 const pagData = async ( pag )=>{
 
-    const data = await obtainData()
+    const data = await obtainAllPokemons()
     if(pag == 1){
         const dataFilter = data.slice((pag - 1), (pag * 12))
         return dataFilter

@@ -20,6 +20,22 @@ module.exports = (sequelize) => {
       type : DataTypes.STRING,
       defaultValue: "https://i.servimg.com/u/f60/14/90/93/75/pokemo22.png"
     },
+    hp: {
+      type: DataTypes.INTEGER,
+      defaultValue:50
+    },
+    attack: {
+      type: DataTypes.INTEGER,
+      defaultValue:50
+    },
+    defense: {
+      defaultValue:50,
+      type: DataTypes.INTEGER,
+    },
+    speed: {
+      defaultValue:50,
+      type: DataTypes.INTEGER,
+    },
     height:{
       type: DataTypes.INTEGER,
     },
