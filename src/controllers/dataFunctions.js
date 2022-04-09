@@ -24,9 +24,10 @@ const obtDbInfo = async ()=>{
 const obtainAllPokemons = async ()=>{
     const data = await obtainData();
     const dbInfo= await obtDbInfo()
-    console.log(dbInfo)
     const dbModified = dbInfo.map(pCreated=>{
         return {
+            img: pCreated.img,
+            createdInDb: pCreated.createdInDb,
             id: pCreated.id,
             height: pCreated.height,
             name : pCreated.name,

@@ -15,7 +15,13 @@ routePokemons.get("/", async (req, res)=>{
     const name = req.query.name
     // const dbInfo = await obtDbInfo()
     if(page){
-        const data = await pagData(page)
+        try{
+
+            const data = await pagData(page)
+        }catch(error){
+            console.log(error)
+        }
+
 
 
    // const pokemones = await Promise.all(data.map(async poke=>{

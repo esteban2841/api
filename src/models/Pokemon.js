@@ -18,7 +18,7 @@ module.exports = (sequelize) => {
     },
     img:{
       type : DataTypes.STRING,
-      defaultValue: "https://i.servimg.com/u/f60/14/90/93/75/pokemo22.png"
+      defaultValue:"https://i.servimg.com/u/f60/14/90/93/75/pokemo22.png"
     },
     hp: {
       type: DataTypes.INTEGER,
