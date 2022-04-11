@@ -9,11 +9,55 @@ const urlBase = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=40"
 
 // routePokemons.get("/", async (req, res)=>{
 
+<<<<<<< HEAD
 //     const page = req.query.page
 //     const name = req.query.name
 //     // const dbInfo = await obtDbInfo()
 //     if(page){
 //         const data = await pagData(page)
+=======
+
+// routePokemons.get("/", async (req, res)=>{
+
+//     const page = req.query.page
+//     const name = req.query.name
+//     // const dbInfo = await obtDbInfo()
+//     if(page){
+//         try{
+
+//             const data = await pagData(page)
+//         }catch(error){
+//             console.log(error)
+//         }
+
+
+
+   // const pokemones = await Promise.all(data.map(async poke=>{
+    //     const data = await fetch(poke.url)
+    //     const respuesta = await data.json()
+    //     const types = respuesta.types.map(t=>{
+    //         return {name :t.type.name}
+    //     })
+    //     const stats = respuesta.stats.map(t=>{
+    //         return{
+    //             name: t.stat.name,
+    //             value: t.base_stat
+    //         } 
+    //     })
+        
+    //     return({
+    //         id: respuesta.id,
+    //         height: respuesta.height,
+    //         name : respuesta.name,
+    //         img :  respuesta.id<10?`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/00${respuesta.id}.png`:`https://assets.pokemon.com/assets/cms2/img/pokedex/detail/0${respuesta.id}.png`,
+    //         types : types,
+    //         weight : respuesta.weight,
+    //         stats : stats
+    //     })
+
+    // }))
+
+>>>>>>> 67de17c76718dbfc7000e5e45a8a5955f007c1cf
     
 // //    res.send([...dbInfo,...pokemones])
 //     res.send(data)
