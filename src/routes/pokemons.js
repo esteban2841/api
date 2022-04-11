@@ -50,13 +50,13 @@ routePokemons.get('/', async (req,res)=>{
             const pokeFiletered = data.filter(pokemon=>{
                 return pokemon.name == name
             })
-            res.sendStatus(200)
-            res.send(pokeFiletered)
+            res.sendStatus(200).send(pokeFiletered)
         }catch(error){
+            
             console.log(error)
+            res.sendStatus(400)
         }
     }else{
-        res.sendStatus(400)
         res.send(data)
     }
 } )
@@ -79,8 +79,8 @@ routePokemons.post('/', async (req, res) => {
         })
         await newPokemon.addType(typesDb1)
         await newPokemon.addType(typesDb2)
-        res.sendStatus(200)
-        res.json((newPokemon.toJSON()));
+        
+        res.json((newPokemon.toJSON())).sendStatus(200);
         
     } catch (error) {
         res.sendStatus(400)
@@ -96,8 +96,8 @@ routePokemons.get("/all", async (req, res)=>{
     try{
         const data = await obtainAllPokemons()
        
-        res.send(data)
-        res.sendStatus(200)
+        res.send(data).sendStatus(200)
+        
     }catch(error){
         res.sendStatus(400)
         console.log(error)
@@ -117,7 +117,6 @@ routePokemons.get("/:id", async (req, res)=>{
         const pokeFiletered = data.filter(pokemon=>{
             return pokemon.id == id
         })
-        res.sendStatus(200)
         res.send(pokeFiletered)
     }catch(error){
         res.sendStatus(400)

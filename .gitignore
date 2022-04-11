@@ -1,0 +1,2 @@
+# ignore the file literally named jest.config.js
+jest.config.js

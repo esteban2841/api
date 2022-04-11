@@ -14,7 +14,7 @@ module.exports = (sequelize) => {
     name: {
 
       type: DataTypes.STRING,
-
+      allowNull:false
     },
     img:{
       type : DataTypes.STRING,
@@ -37,9 +37,11 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
     },
     height:{
+      defaultValue:50,
       type: DataTypes.INTEGER,
     },
     weight:{
+      defaultValue:50,
       type: DataTypes.INTEGER,
   
     },

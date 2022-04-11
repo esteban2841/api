@@ -24,7 +24,6 @@ const obtDbInfo = async ()=>{
 const obtainAllPokemons = async ()=>{
     const data = await obtainData();
     const dbInfo= await obtDbInfo()
-    console.log(dbInfo)
     const dbModified = dbInfo.map(pCreated=>{
         return {
             id: pCreated.id,
@@ -37,7 +36,6 @@ const obtainAllPokemons = async ()=>{
             createdInDb: true
         }
     })
-    console.log(dbModified)
     
     const allPokemons = await Promise.all(data.map(async poke=>{
         
