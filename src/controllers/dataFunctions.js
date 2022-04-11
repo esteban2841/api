@@ -33,7 +33,8 @@ const obtainAllPokemons = async ()=>{
             img :  pCreated.img,
             types : pCreated.types,
             weight : pCreated.weight,
-            stats : [{name: "hp" ,value: pCreated.hp},{name: "attack", value: pCreated.attack},{name: "defense",value: pCreated.defense},{name: "speed",value: pCreated.speed}]
+            stats : [{name: "hp" ,value: pCreated.hp},{name: "attack", value: pCreated.attack},{name: "defense",value: pCreated.defense},{name: "speed",value: pCreated.speed}],
+            createdInDb: true
         }
     })
     console.log(dbModified)
@@ -69,25 +70,25 @@ const obtainAllPokemons = async ()=>{
     return [...dbModified,...allPokemons]
 }
 
-const pagData = async ( pag )=>{
+// const pagData = async ( pag )=>{
 
-    const data = await obtainAllPokemons()
-    if(pag == 1){
-        const dataFilter = data.slice((pag - 1), (pag * 12))
-        return dataFilter
-    }else{
-        const dataFilter = data.slice((pag -1)* 12 , (pag) * 12);
-        return dataFilter
-    }
+//     const data = await obtainAllPokemons()
+//     if(pag == 1){
+//         const dataFilter = data.slice((pag - 1), (pag * 12))
+//         return dataFilter
+//     }else{
+//         const dataFilter = data.slice((pag -1)* 12 , (pag) * 12);
+//         return dataFilter
+//     }
 
-}
+// }
 
 const obtainTypes = async ()=>{
     const data = await fetch(urlTypes)
     const res = await data.json()
     return res.results
 }
-module.exports.pagData = pagData;
+// module.exports.pagData = pagData;
 module.exports.obtainAllPokemons = obtainAllPokemons;
 module.exports.obtainData = obtainData;
 module.exports.obtainTypes = obtainTypes;
