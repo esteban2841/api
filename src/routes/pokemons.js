@@ -2,20 +2,19 @@ const {Router} = require("express");
 const routePokemons = Router();
 const fetch = require("cross-fetch")
 const {pagData, obtainAllPokemons, obtDbInfo} = require("../controllers/dataFunctions.js")
-const {Pokemon, Types } = require("../db.js")
+const {Pokemon, Types } = require("../db.js");
+const { set } = require("../app.js");
 
 const urlBase = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=40"
 
 
 // routePokemons.get("/", async (req, res)=>{
 
-<<<<<<< HEAD
 //     const page = req.query.page
 //     const name = req.query.name
 //     // const dbInfo = await obtDbInfo()
 //     if(page){
 //         const data = await pagData(page)
-=======
 
 // routePokemons.get("/", async (req, res)=>{
 
@@ -57,7 +56,6 @@ const urlBase = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=40"
 
     // }))
 
->>>>>>> 67de17c76718dbfc7000e5e45a8a5955f007c1cf
     
 // //    res.send([...dbInfo,...pokemones])
 //     res.send(data)
@@ -86,21 +84,30 @@ const urlBase = "https://pokeapi.co/api/v2/pokemon?offset=0&limit=40"
 
 routePokemons.get('/', async (req,res)=>{
     const data = await obtainAllPokemons()
+    
     const name = req.query.name
-    console.log(name)
     if(name){
         try{
             const data = await obtainAllPokemons()
             const pokeFiletered = data.filter(pokemon=>{
                 return pokemon.name == name
             })
-            res.sendStatus(200).send(pokeFiletered)
+            if(pokeFiletered.length==0){
+                res.send(["pokemon no encontrado"])
+            }else{
+
+                res.send(pokeFiletered)
+            }
+
+            
+            
         }catch(error){
             
             console.log(error)
-            res.sendStatus(400)
+            res.send("Pokemon no encontrado")
         }
-    }else{
+    }
+    else{
         res.send(data)
     }
 } )
@@ -124,7 +131,7 @@ routePokemons.post('/', async (req, res) => {
         await newPokemon.addType(typesDb1)
         await newPokemon.addType(typesDb2)
         
-        res.json((newPokemon.toJSON())).sendStatus(200);
+        res.json((newPokemon.toJSON()));
         
     } catch (error) {
         res.sendStatus(400)
@@ -166,9 +173,20 @@ routePokemons.get("/:id", async (req, res)=>{
         res.sendStatus(400)
         console.log(error)
     }
-   
+   Math.sqrt(100000)
 
 })
+routePokemons.delete("/:id", async (req, res)=>{
+    const id = req.params.id;
+    console.log(id)
+    // function (id, Pokemon){
+        const pokemonToDelete = await Pokemon.findOne({where: {id : id}})
+        const deletePokemon = await Pokemon.destroy({where: {id :id}});
+        res.send(pokemonToDelete)
+    // }
+})
+
+
 
 
 module.exports = routePokemons
