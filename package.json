@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -L",
-    "test": "jest --detectOpenHandles"
+    "start": "node index.js",
+    "test": "jest --detectOpenHandles",
+    "dev": "nodemon index.js"
   },
   "author": "Henry",
   "license": "ISC",
