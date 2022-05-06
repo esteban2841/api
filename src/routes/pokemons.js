@@ -182,7 +182,8 @@ routePokemons.delete("/:id", async (req, res)=>{
     // function (id, Pokemon){
         const pokemonToDelete = await Pokemon.findOne({where: {id : id}})
         const deletePokemon = await Pokemon.destroy({where: {id :id}});
-        res.send(pokemonToDelete)
+        res.status(200)
+        console.log(pokemonToDelete)
     // }
 })
 
